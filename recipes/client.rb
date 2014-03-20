@@ -27,9 +27,24 @@ remote_file "/tmp/pcmonitor_#{arch}.rpm" do
   end
 end
 
-##Define the pc-monitor service
-service "pcmonitor" do
-  supports :status => true, :restart => true
+
+##Define the pc-monitor service, different init script for diff platforms
+if platform?("redhat", "centos", "fedora", "amazon")
+  service "pcmonitor.redhat" do
+    supports :status => true, :restart => true
+  end
+elsif platform?("ubuntu")
+  service "pcmonitor" do
+    supports :status => true, :restart => true
+  end
+elsif platform?("suse")
+  service "pcmonitor.suse" do
+    supports :status => true, :restart => true
+  end
+else
+  service "pcmonitor" do
+    supports :status => true, :restart => true
+  end
 end
 
 ##Get username and password from databag
