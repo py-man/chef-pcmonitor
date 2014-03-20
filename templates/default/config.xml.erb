@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config	xmlns="http://www.mobilepcmonitor.com/linuxconfig">
+  <!--Account Information-->
+  <!--Username: Your Mobile PC Monitor username-->
+  <!--Password: Your Mobile PC Monitor password-->
+  <!--UseCustomServer: Enable this option only if you have a dedicated Enterprise Server assigned to your account-->
+  <!--CustomServerAddress: If you have used UseCustomServer="true" you must specify the server address of the Enterprise Server-->
+  <Account Username="<%= @agent_user -%>" Password="<%= @agent_password -%>" UseCustomServer="<%= node["pcmonitor"]["UseCustomServer"] -%>" CustomServerAddress="<%= node["pcmonitor"]["UseCustomServer"] -%>" />
+
+  <!--Computer Information-->
+  <!--Name: the name you want this computer to be listed as (Default: Linux computer name)-->
+  <!--Group: the name of the group you want this computer to be listed in (Default: "Default")-->
+  <ComputerInformation Name="<%= node["pcmonitor"]["ComputerName"] -%>" Group="<%= node["pcmonitor"]["Group"] -%>" />
+
+  <!--Allowed Commands-->
+  <!--What commands are allowed on this computer-->
+  <!--Possible nodes are Restart ,ShutDown, PowerOff, Suspend, Hibernate-->
+  <!--For each node the following argument must be present: Allowed (Values: true or false)-->
+  <AllowedCommands>
+    <Restart Allowed="<%= node["pcmonitor"]["Restart"] -%>" />
+    <ShutDown Allowed="<%= node["pcmonitor"]["ShutDown"] -%>" />
+    <PowerOff Allowed="<%= node["pcmonitor"]["PowerOff"] -%>" />
+    <Suspend Allowed="<%= node["pcmonitor"]["Suspend"] -%>" />
+    <Hibernate Allowed="<%= node["pcmonitor"]["Hibernate"] -%>" />
+  </AllowedCommands>
+
+  <!--Notifications-->
+  <Notifications>
+    <!--Send a notification when the computer is offline-->
+    <!--Enabled: true or false-->
+    <WhenOffline Enabled="<%= node["pcmonitor"]["NotifyOffline"] -%>" />
+    <!--Send a notification when the computer comes online-->
+    <!--Enabled: true or false-->
+    <OnOnline Enabled="<%= node["pcmonitor"]["NotifyOnline"] -%>" />
+    <!--Send a notification when the computer shuts down-->
+    <!--Enabled: true or false-->
+    <OnShutdown Enabled="<%= node["pcmonitor"]["NotifyShutdown"] -%>" />
+    <!--Send a notification when the computer's available memory is bellow a certain percentage-->
+    <!--Percentage: the percentage (between 10 and 90)-->
+    <!--Enabled: true or false-->
+    <MemoryLow Percentage="<%= node["pcmonitor"]["MemoryLowPercentage"] -%>" Enabled="<%= node["pcmonitor"]["MemoryLowCheck"] -%>" />
+    <!--Send a notification when the computer's cpu usage is greater than a percentage for n minutes-->
+    <!--Percentage: the percentage (between 10 and 90)-->
+    <!--Minutes: n -the number of minutes (between 1 and 120)-->
+    <!--Enabled: true or false-->
+    <HighCpuUsage Percentage="90" Minutes="1" Enabled="true" />
+    <!--Send a notification when the computer's cpu usage is less than a percentage for n minutes-->
+    <!--Percentage: the percentage (between 10 and 90)-->
+    <!--Minutes: n -the number of minutes (between 1 and 120)-->
+    <!--Enabled: true or false-->
+    <LowCpuUsage Percentage="11" Minutes="1" Enabled="true" />
+    <!--Send a notification when a port is closed for n minutes-->
+    <!--Minutes: n -the number of minutes (between 1 and 120)-->
+    <!--Enabled: true or false-->
+    <PortClosed Minutes="1" Enabled="false" />
+    <!--Send a notification when the space is low on a hdd. You can add multiple hdds by adding multiple <Hdd .../> nodes-->
+    <!--Percentage: the percentage (between 10 and 90)-->
+    <!--Path: the mount path-->
+    <!--Enabled: true or false-->
+    <LowHDDSpace Enabled="<%= node["pcmonitor"]["LowHDDSpace"] -%>">
+      <Hdd Percentage="<%= node["pcmonitor"]["LowHDDSpacePercentage"] -%>" Path="LowHDDSpacePath" Enabled="true" />
+    </LowHDDSpace>
+    <!--Send a notification when the public IP has changed-->
+    <!--Enabled: true or false-->
+    <IpChange Enabled="true"/>
+    <!--Ping Responses - allows the monitoring of network speed to various addresses-->
+    <!--You can add multiple PingResponse nodes-->
+    <!--Enabled: true or false. You can disable all ping response notifications notifications-->
+    <PingResponses Enabled="false">
+    	<!--Address: the ip or hostname you want pinged-->
+    	<!--Position: the order in which these rules are evaluated-->
+    	<!--Miliseconds: the value that defines a slow ping response-->
+    	<!--Minutes: for how many minutes should the condition stay activated before a notification is sent-->
+    	<!--PriorityOnSlowResponse: the priority for the slow response notification-->
+    	<!--PriorityOnNoResponse: the priority for the no response notification-->
+    	<!--Possible values for PriorityOnSlowResponse and PriorityOnNoResponse: 0=Critical, 1=Elevated, 2=Normal, 3=Low -->
+    	<PingResponse PriorityOnSlowResponse="1" PriorityOnNoResponse="0" Minutes="5" Miliseconds="50" Alias="Printer" Address="10.10.10.2" Position="1"/>
+    </PingResponses>
+  </Notifications>
+  <!--Network-->
+  <!--Network related configs-->
+  <Network>
+    <!--Ping-->
+    <!--Monitor ping response time to a specific server-->
+    <!--Server: the IP or hostname of the server-->
+    <!--Enabled: true or false-->
+    <Ping Server="www.google.com" Enabled="true" />
+    <!--Monitored Ports-->
+    <!--You can monitor if a port is closed or opened-->
+    <!--You can monitor multiple ports by adding multiple <Port.../> tags-->
+    <MonitoredPorts>
+      <!--Type - port's type (TCP or UDP)-->
+      <!--Number- port's number-->
+      <!--Name- port's name -->
+      <!--Name- port's address (only applicable if port type is TCP)-->
+      <Port Type="TCP" Number="80" Name="80" Address="www.google.com"/>
+    </MonitoredPorts>
+    <!--Network Interfaces-->
+    <!--The network interfaces you want to monitor-->
+    <!--You can specify multiple interfaces , by adding multiple <Interface../> tags-->
+    <NetworkInterfaces>
+      <!--Name - the name of the interface-->
+      <Interface Name="eth0" />
+    </NetworkInterfaces>
+    <!--Wake on WAN settings-->
+    <!--Port- the port on which the packet will be send-->
+    <!--Enabled: true or false-->
+    <WoWAN Port="9" Enabled="false"/>
+  </Network>
+  <!--Specify if this computer is in maintenance mode or not-->
+  <!--Possible values: true or false-->
+  <MaintenanceMode>false</MaintenanceMode>
+  <!--Specify if you use a proxy.-->
+  <!--Enabled: true or false-->
+  <!--Host: the IP or hostname of the proxy server-->
+  <!--Port: the port for the proxy server (not mandatory default 8080)-->
+  <!--User: the user for the proxy server (not mandatory)-->
+  <!--Password: the password for the proxy server(not mandatory-->
+  <Proxy Enabled="false" Host="proxy.host" Port="8080" User="proxy.user" Password="proxy.password"/>
+</config>
