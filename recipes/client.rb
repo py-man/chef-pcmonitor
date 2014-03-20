@@ -19,8 +19,9 @@ else
 remote_file "/tmp/pcmonitor_#{arch}.rpm" do
     source "http://www.mobilepcmonitor.com/download/pcmonitor_#{arch}.rpm"
     mode 0644
+    action :create
   end
-  dpkg_package "pcmonitor-agent" do
+  rpm_package "pcmonitor-agent" do
     source "/tmp/pcmonitor_#{arch}.rpm"
     action :install
   end
